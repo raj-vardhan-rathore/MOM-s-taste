@@ -8,31 +8,52 @@ const app = require("./app");
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
-  await connectDB();
+  try {
+    console.log("🚀 Starting server...");
 
-  const server = http.createServer(app);
-  const io = new Server(server, {
-    cors: {
-      origin: process.env.FRONTEND_URL || "*",
-      methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
-    },
-  });
+    // 🔴 Check Mongo URI
+    if (!process.env.MONGO_URI) {
+      console.error("❌ MONGO_URI is missing");
+      process.exit(1);
+    }
 
-  global.io = io;
+    // 🔴 Connect DB
+    await connectDB();
+    console.log("✅ MongoDB Connected");
 
-  io.on("connection", (socket) => {
-    socket.on("join", (userId) => {
-      socket.join(String(userId));
+    // 🔴 Create server
+    const server = http.createServer(app);
+
+    const io = new Server(server, {
+      cors: {
+        origin: process.env.FRONTEND_URL || "*",
+        methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
+      },
     });
 
-    socket.on("disconnect", () => {
-      // no-op
-    });
-  });
+    global.io = io;
 
-  server.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
+    io.on("connection", (socket) => {
+      console.log("🔌 User connected:", socket.id);
+
+      socket.on("join", (userId) => {
+        socket.join(String(userId));
+      });
+
+      socket.on("disconnect", () => {
+        console.log("❌ User disconnected:", socket.id);
+      });
+    });
+
+    // 🔴 Start server
+    server.listen(PORT, "0.0.0.0", () => {
+      console.log(`🌐 Server running on port ${PORT}`);
+    });
+
+  } catch (error) {
+    console.error("❌ Server failed to start:", error.message);
+    process.exit(1);
+  }
 };
 
 startServer();
