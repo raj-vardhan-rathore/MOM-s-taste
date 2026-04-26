@@ -25,7 +25,7 @@ Moms Taste is a family-oriented food ordering platform where parents can send sw
 5. Seed sample data: `npm run seed`
 6. Start API server: `npm run dev`
 
-Backend runs on `http://localhost:5000`
+Backend runs on `https://mom-s-taste.onrender.com`
 
 ## Frontend Setup
 
@@ -35,7 +35,7 @@ Backend runs on `http://localhost:5000`
 4. Copy `.env.example` to `.env`
 5. Start app: `npm run dev`
 
-Frontend runs on `http://localhost:5173`
+Frontend runs on `https://mom-s-taste.onrender.com`
 
 ## Sample Accounts (after seed)
 

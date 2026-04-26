@@ -29,7 +29,9 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     if (!user?._id) return;
-    const s = io(import.meta.env.VITE_SOCKET_URL || "http://localhost:5000", { transports: ["websocket"] });
+    const socketUrl =
+      import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_API_URL || "https://mom-s-taste.onrender.com";
+    const s = io(socketUrl, { transports: ["websocket"] });
     s.emit("join", user._id);
     setSocket(s);
     return () => s.disconnect();
